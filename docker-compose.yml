@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  kafka:
+    image: obsidiandynamics/kafka
+    ports:
+      - "9092:9092" # Kafka broker
+      - "2181:2181" # Zookeeper (obsidiandynamics/kafka includes ZK)
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092 # Use 'kafka:9092' if services communicate within docker network
+      KAFKA_ZOOKEEPER_CONNECT: localhost:2181 # Or 'zookeeper:2181' if ZK is separate
+      KAFKA_CREATE_TOPICS: "workflow_events:1:1,workflow_step_triggers:1:1" # topic:partitions:replicationFactor
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+
+volumes:
+  redis_data:
+  kafka_data:
