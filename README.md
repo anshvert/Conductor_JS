@@ -88,3 +88,70 @@ Once the dependencies are installed and external services are running:
 
 ```bash
 npm run start:dev
+```
+
+---
+
+## API Endpoints Overview
+
+(Assuming default port `3000`)
+
+### Workflow Definitions
+
+| Method | Endpoint                          | Description                                  |
+| :----- | :-------------------------------- | :------------------------------------------- |
+| `POST` | `/workflows/definitions`          | Create a new workflow definition.            |
+| `GET`  | `/workflows/definitions`          | List all workflow definitions.               |
+| `GET`  | `/workflows/definitions/:id`      | Get details of a specific workflow definition. |
+| `PUT`  | `/workflows/definitions/:id`      | Update a workflow definition.                |
+| `DELETE` | `/workflows/definitions/:id`    | Delete a workflow definition.                |
+
+### Workflow Execution & Instances
+
+| Method | Endpoint                              | Description                                                                                                                                              |
+| :----- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST` | `/workflows/:idOrName/trigger`        | Trigger a workflow by its ID or name. <br/> **Body**: `{ "payload": { ...initial data for the workflow... } }` <br/> **Response**: `202 Accepted` with initial workflow instance data. |
+| `GET`  | `/workflows/instances/:instanceId`    | Get the current state and history of a specific workflow instance.                                                                                       |
+
+---
+
+## Example Workflow Definition
+
+A sample workflow definition (like `sample-user-signup` auto-loaded or one you create) might look like this:
+
+```json
+{
+  "name": "User Signup Process",
+  "description": "Handles new user registration, email, and analytics.",
+  "startAt": "validateUserInput",
+  "steps": {
+    "validateUserInput": {
+      "id": "validateUserInput",
+      "name": "Validate User Input Data",
+      "type": "function",
+      "functionName": "validateUserData",
+      "inputPath": ".initialPayload",
+      "resultPath": ".validationOutput",
+      "nextStepId": "createUserRecord"
+    },
+    "createUserRecord": {
+      "id": "createUserRecord",
+      "name": "Create User in Database",
+      "type": "function",
+      "functionName": "createUserInDB",
+      "inputPath": ".validationOutput",
+      "resultPath": ".userRecord",
+      "nextStepId": "sendWelcomeNotification"
+    },
+    "sendWelcomeNotification": {
+      "id": "sendWelcomeNotification",
+      "name": "Send Welcome Email",
+      "type": "function",
+      "functionName": "sendWelcomeEmail",
+      "inputPath": ".userRecord",
+      "resultPath": ".emailStatus",
+      "nextStepId": null
+    }
+  }
+}
+```
