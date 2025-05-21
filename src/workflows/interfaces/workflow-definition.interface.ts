@@ -1,4 +1,4 @@
-import { WorkflowStep } from './workflow-step.interface.ts';
+import { WorkflowStep } from './workflow-step.interface';
 
 export interface WorkflowDefinition {
     id: string; // Unique ID for the workflow definition

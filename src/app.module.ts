@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SimulatedFunctionsModule } from './simulated-functions/simulated-functions.module';
 import { KafkaProducerModule } from './kafka/kafka-producer.module';
 import { RedisAppModule } from './redis/redis.module';
+import { WorkflowsModule } from './workflows/workflows.module';
 
 @Module({
     imports: [
